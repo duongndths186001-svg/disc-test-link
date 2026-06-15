@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arovia — Bài test tính cách DISC</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f4f0; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+  .card { background: #fff; border-radius: 16px; max-width: 580px; width: 100%; padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+
+  .brand { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: #7F77DD; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: 22px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 1.5rem; line-height: 1.5; }
+
+  .progress-bg { background: #f0eff8; border-radius: 99px; height: 6px; margin-bottom: 1.5rem; }
+  .progress-fill { background: #7F77DD; border-radius: 99px; height: 6px; transition: width 0.4s ease; }
+
+  .q-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .q-num { font-size: 12px; color: #aaa; }
+  .q-answered { font-size: 12px; color: #aaa; }
+  .q-text { font-size: 17px; font-weight: 500; color: #1a1a1a; margin-bottom: 1.25rem; line-height: 1.55; }
+
+  .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.75rem; }
+  .opt { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px; border: 1.5px solid #e8e8e8; border-radius: 10px; background: #fff; cursor: pointer; text-align: left; font-family: inherit; font-size: 14px; color: #333; line-height: 1.5; transition: border-color 0.15s, background 0.15s; width: 100%; }
+  .opt:hover { border-color: #b8b4ee; background: #f8f7ff; }
+  .opt.selected { border-color: #7F77DD; background: #f0effe; color: #3C3489; }
+  .opt-letter { width: 24px; height: 24px; border-radius: 50%; background: #f0eff8; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; color: #888; margin-top: 1px; }
+  .opt.selected .opt-letter { background: #7F77DD; color: #fff; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; }
+  .btn { padding: 10px 22px; border-radius: 8px; border: 1.5px solid #ddd; background: #fff; cursor: pointer; font-size: 14px; font-family: inherit; color: #555; transition: background 0.15s; }
+  .btn:hover { background: #f5f5f5; }
+  .btn.primary { background: #7F77DD; color: #fff; border-color: #7F77DD; }
+  .btn.primary:hover { background: #6a62c8; }
+  .btn:disabled { opacity: 0.35; cursor: default; }
+
+  /* Result */
+  .result { display: none; }
+  .result.show { display: block; }
+  .score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 1.25rem; }
+  .score-box { border: 1.5px solid #e8e8e8; border-radius: 10px; padding: 12px 8px; text-align: center; }
+  .score-box.top { border-color: #7F77DD; }
+  .score-disc { font-size: 18px; font-weight: 600; color: #333; }
+  .score-num { font-size: 26px; font-weight: 600; }
+  .score-pts { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+  .main-result { border: 1.5px solid #e8e8e8; border-radius: 12px; padding: 1.25rem; margin-bottom: 10px; }
+  .tag { display: inline-block; padding: 3px 12px; border-radius: 99px; font-size: 12px; font-weight: 500; margin-bottom: 10px; }
+  .result-name { font-size: 19px; font-weight: 600; color: #1a1a1a; margin-bottom: 6px; }
+  .result-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 1rem; }
+  .scent-label { font-size: 12px; color: #aaa; margin-bottom: 8px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pill { padding: 5px 14px; border-radius: 99px; font-size: 13px; border: 1.5px solid #e8e8e8; color: #555; }
+
+  .sec-result { background: #f8f8f8; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 10px; }
+  .sec-label { font-size: 12px; color: #aaa; margin-bottom: 4px; }
+  .sec-name { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 6px; }
+  .sec-desc { font-size: 13px; color: #777; line-height: 1.55; margin-bottom: 10px; }
+
+  .note-box { background: #f0effe; border-radius: 10px; padding: 12px 16px; margin-bottom: 1rem; font-size: 13px; color: #534AB7; line-height: 1.6; }
+  .restart { width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #ddd; background: #fff; cursor: pointer; font-size: 14px; font-family: inherit; color: #888; }
+  .restart:hover { background: #f5f5f5; }
+
+  @media (max-width: 480px) {
+    .card { padding: 1.25rem; }
+    h1 { font-size: 19px; }
+    .q-text { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- QUIZ -->
+  <div id="quiz">
+    <div class="brand">Arovia</div>
+    <h1>Bài test tính cách DISC</h1>
+    <p class="subtitle">Chọn 1 đáp án phù hợp nhất với bạn. Bài test gồm 10 câu, mất khoảng 2–3 phút.</p>
+    <div class="progress-bg"><div class="progress-fill" id="pbar" style="width:10%"></div></div>
+    <div class="q-meta">
+      <span class="q-num" id="q-num">Câu 1 / 10</span>
+      <span class="q-answered" id="q-answered">0 / 10 đã trả lời</span>
+    </div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="options"></div>
+    <div class="nav">
+      <button class="btn" id="prev-btn" onclick="prevQ()" disabled>← Trước</button>
+      <button class="btn primary" id="next-btn" onclick="nextQ()">Tiếp theo →</button>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result" id="result">
+    <div class="brand">Arovia</div>
+    <h1 style="margin-bottom:4px">Kết quả của bạn</h1>
+    <p class="subtitle" style="margin-bottom:1.25rem">Dựa trên 10 câu trả lời, đây là tính cách và nhóm mùi hương phù hợp với bạn.</p>
+    <div class="score-grid" id="score-grid"></div>
+    <div class="main-result" id="main-result"></div>
+    <div class="sec-result" id="sec-result"></div>
+    <div class="note-box">💧 <strong>Bước tiếp theo:</strong> Nhân viên Arovia sẽ đo pH da của bạn bằng giấy thử để hoàn thiện công thức nước hoa cá nhân hóa.</div>
+    <button class="restart" onclick="restart()">↺ Làm lại từ đầu</button>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  { text: "Khi đối mặt với thử thách lớn, phản ứng đầu tiên của bạn là gì?", opts: [
+    { text: "Lập tức lao vào giải quyết, không chờ ai", disc: "D" },
+    { text: "Huy động mọi người cùng brainstorm", disc: "I" },
+    { text: "Bình tĩnh phân tích từng bước, tìm sự hỗ trợ", disc: "S" },
+    { text: "Thu thập thông tin đầy đủ trước khi hành động", disc: "C" }
+  ]},
+  { text: "Môi trường làm việc / học tập lý tưởng của bạn?", opts: [
+    { text: "Tự chủ, có quyền quyết định, ít ràng buộc", disc: "D" },
+    { text: "Năng động, nhiều người, nhiều ý tưởng mới", disc: "I" },
+    { text: "Ổn định, hòa thuận, mọi người tin tưởng nhau", disc: "S" },
+    { text: "Ngăn nắp, có quy trình rõ ràng, ít xáo trộn", disc: "C" }
+  ]},
+  { text: "Người khác thường nhận xét bạn là người như thế nào?", opts: [
+    { text: "Dứt khoát, tự tin, đôi khi hơi thẳng thắn", disc: "D" },
+    { text: "Vui vẻ, cuốn hút, dễ kết bạn", disc: "I" },
+    { text: "Đáng tin, kiên nhẫn, luôn lắng nghe", disc: "S" },
+    { text: "Cẩn thận, tỉ mỉ, nghiêm túc", disc: "C" }
+  ]},
+  { text: "Khi chọn một món đồ mới, bạn ưu tiên điều gì nhất?", opts: [
+    { text: "Nổi bật, thể hiện đẳng cấp và cá tính", disc: "D" },
+    { text: "Trendy, nhiều người khen, dễ chia sẻ lên mạng", disc: "I" },
+    { text: "Thoải mái, bền, phù hợp lâu dài", disc: "S" },
+    { text: "Chất lượng thật sự, có lý do rõ ràng để chọn", disc: "C" }
+  ]},
+  { text: "Buổi tối lý tưởng của bạn trông như thế nào?", opts: [
+    { text: "Xem phim hành động hoặc tập thể thao cường độ cao", disc: "D" },
+    { text: "Tụ tập bạn bè, đi bar hoặc sự kiện vui vẻ", disc: "I" },
+    { text: "Ở nhà, uống trà, xem phim nhẹ nhàng cùng người thân", disc: "S" },
+    { text: "Đọc sách, nghe nhạc, hoặc làm điều gì đó có chiều sâu", disc: "C" }
+  ]},
+  { text: "Khi căng thẳng, bạn thường làm gì?", opts: [
+    { text: "Tập trung giải quyết vấn đề gây ra stress", disc: "D" },
+    { text: "Nói chuyện với ai đó, xả ra ngoài", disc: "I" },
+    { text: "Làm điều gì đó quen thuộc, nhẹ nhàng để bình tĩnh lại", disc: "S" },
+    { text: "Cần không gian một mình để suy nghĩ và phân tích", disc: "C" }
+  ]},
+  { text: "Trong chuyến du lịch, bạn thích kiểu trải nghiệm nào?", opts: [
+    { text: "Khám phá địa điểm mới, phiêu lưu, không theo tour", disc: "D" },
+    { text: "Đi cùng hội bạn đông, nhiều hoạt động vui nhộn", disc: "I" },
+    { text: "Nghỉ ngơi thoải mái ở nơi yên tĩnh, gần gũi thiên nhiên", disc: "S" },
+    { text: "Tìm hiểu văn hóa, lịch sử, nghệ thuật địa phương", disc: "C" }
+  ]},
+  { text: "Nếu là một loài hoa, bạn nghĩ mình sẽ là?", opts: [
+    { text: "Hoa hồng đỏ — mạnh mẽ, đầy cá tính", disc: "D" },
+    { text: "Hoa hướng dương — rực rỡ, lan tỏa năng lượng", disc: "I" },
+    { text: "Hoa cúc trắng — giản dị, bền bỉ, đáng tin", disc: "S" },
+    { text: "Hoa lan — tinh tế, quý phái, không phổ biến", disc: "C" }
+  ]},
+  { text: "Khi nghe \"mùi hương\", điều đầu tiên bạn liên tưởng đến?", opts: [
+    { text: "Mùi gỗ, da thuộc, khói — mạnh mẽ và quyền lực", disc: "D" },
+    { text: "Mùi hoa tươi, trái cây — vui tươi và dễ chịu", disc: "I" },
+    { text: "Mùi ấm áp như vani, phấn — gợi nhớ ký ức đẹp", disc: "S" },
+    { text: "Mùi xanh lá, thảo mộc, tinh tế — sâu sắc và độc đáo", disc: "C" }
+  ]},
+  { text: "Bạn muốn người khác cảm nhận điều gì khi ở gần bạn?", opts: [
+    { text: "Sức mạnh và sự tự tin — bạn là người đáng nể", disc: "D" },
+    { text: "Niềm vui và năng lượng — bạn làm mọi thứ sống động hơn", disc: "I" },
+    { text: "Sự ấm áp và tin tưởng — bạn luôn ở đây khi cần", disc: "S" },
+    { text: "Chiều sâu và trí tuệ — bạn có góc nhìn khác biệt", disc: "C" }
+  ]}
+];
+
+const discInfo = {
+  D: { name: "Dominant — Mạnh mẽ & Quyết đoán", desc: "Bạn có năng lượng mạnh mẽ, hành động nhanh và luôn hướng đến kết quả. Bạn thích dẫn đầu và không ngại đối mặt với thử thách.", scents: ["Woody", "Leather", "Spicy"], color: "#7F77DD", bg: "#f0effe", textColor: "#3C3489" },
+  I: { name: "Influence — Nhiệt tình & Sáng tạo", desc: "Bạn lan tỏa năng lượng tích cực đến mọi người xung quanh. Bạn thích kết nối, truyền cảm hứng và luôn mang lại sự vui tươi.", scents: ["Floral", "Fruity", "Fresh"], color: "#1D9E75", bg: "#e6f7f1", textColor: "#0F6E56" },
+  S: { name: "Steadiness — Ấm áp & Đáng tin", desc: "Bạn là người kiên nhẫn, đáng tin cậy và giàu lòng đồng cảm. Bạn tạo ra sự ổn định và cảm giác an toàn cho những người xung quanh.", scents: ["Oriental", "Powdery", "Musky"], color: "#BA7517", bg: "#fef4e0", textColor: "#854F0B" },
+  C: { name: "Conscientiousness — Tinh tế & Sâu sắc", desc: "Bạn có tư duy phân tích sắc bén, chú ý đến từng chi tiết và luôn tìm kiếm sự hoàn hảo. Bạn đánh giá cao chất lượng và chiều sâu.", scents: ["Chypre", "Aromatic", "Green"], color: "#378ADD", bg: "#e8f2fc", textColor: "#0C447C" }
+};
+
+let current = 0;
+let answers = new Array(10).fill(null);
+
+function render() {
+  const q = questions[current];
+  document.getElementById("q-num").textContent = `Câu ${current + 1} / 10`;
+  document.getElementById("pbar").style.width = ((current + 1) / 10 * 100) + "%";
+  document.getElementById("q-text").textContent = q.text;
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById("q-answered").textContent = `${answered} / 10 đã trả lời`;
+  const opts = document.getElementById("options");
+  opts.innerHTML = "";
+  const letters = ["A", "B", "C", "D"];
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt" + (answers[current] === i ? " selected" : "");
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${o.text}</span>`;
+    btn.onclick = () => { answers[current] = i; render(); };
+    opts.appendChild(btn);
+  });
+  document.getElementById("prev-btn").disabled = current === 0;
+  document.getElementById("next-btn").textContent = current === 9 ? "Xem kết quả →" : "Tiếp theo →";
+}
+
+function nextQ() {
+  if (current === 9) {
+    const missing = answers.filter(a => a === null).length;
+    if (missing > 0) { alert(`Bạn còn ${missing} câu chưa trả lời. Hãy hoàn thành tất cả nhé!`); return; }
+    showResult(); return;
+  }
+  current++; render();
+}
+
+function prevQ() { if (current > 0) { current--; render(); } }
+
+function showResult() {
+  const scores = { D: 0, I: 0, S: 0, C: 0 };
+  questions.forEach((q, i) => { if (answers[i] !== null) scores[q.opts[answers[i]].disc]++; });
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  const [mainD, mainScore] = sorted[0];
+  const [secD, secScore] = sorted[1];
+  const mi = discInfo[mainD], si = discInfo[secD];
+
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("result").classList.add("show");
+
+  const sg = document.getElementById("score-grid");
+  sg.innerHTML = ["D","I","S","C"].map(d => `
+    <div class="score-box${d === mainD ? " top" : ""}">
+      <div class="score-disc" style="${d === mainD ? `color:${discInfo[d].color}` : ""}">${d}</div>
+      <div class="score-num" style="color:${discInfo[d].color}">${scores[d]}</div>
+      <div class="score-pts">điểm</div>
+    </div>`).join("");
+
+  document.getElementById("main-result").innerHTML = `
+    <span class="tag" style="background:${mi.bg};color:${mi.textColor}">Tính cách chính</span>
+    <div class="result-name">${mi.name}</div>
+    <div class="result-desc">${mi.desc}</div>
+    <div class="scent-label">Nhóm mùi hương phù hợp</div>
+    <div class="pills">${mi.scents.map(s => `<span class="pill" style="background:${mi.bg};color:${mi.textColor};border-color:${mi.color}44">${s}</span>`).join("")}</div>`;
+
+  document.getElementById("sec-result").innerHTML = `
+    <div class="sec-label">Tính cách phụ (${secScore} điểm)</div>
+    <div class="sec-name">${si.name}</div>
+    <div class="sec-desc">${si.desc}</div>
+    <div class="scent-label">Note mùi bổ sung</div>
+    <div class="pills">${si.scents.map(s => `<span class="pill">${s}</span>`).join("")}</div>`;
+}
+
+function restart() {
+  current = 0; answers = new Array(10).fill(null);
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("result").classList.remove("show");
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
